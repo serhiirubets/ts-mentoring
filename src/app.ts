@@ -6,6 +6,7 @@ enum Category {
   'Angular2'
 }
 
+// Basic Types
 const booksData = [
   { id: 2323, title: 'Refactoring JavaScript', author: 'Evan Burchard', available: true, category: Category.JavaScript },
   { id: 3454, title: 'JavaScript Testing', author: 'Liang Yuxian Eugene', available: false, category: Category.Angular2 },
@@ -27,6 +28,10 @@ function logFirstAvailable(books: Array<any> = booksData): void {
   console.log(`Total book length is ${booksLength}`);
 }
 
+logFirstAvailable(getAllBooks());
+logFirstAvailable();
+
+// 02 Enum
 function getBookTitlesByCategory(category: Category = Category.JavaScript): Array<string> {
   const titles: Array<string> = [];
   const books = getAllBooks();
@@ -46,6 +51,12 @@ function logBookTitles(titles: Array<string>): void {
   }
 }
 
+const booksByJsCategory = getBookTitlesByCategory(Category.JavaScript);
+logBookTitles(booksByJsCategory);
+
+// 03. Arrow Functions
+booksByJsCategory.forEach((title) => console.log(title));
+
 const getBookByID = (id: number): Object => {
   return getAllBooks().find((book) => book.id === id);
 };
@@ -54,6 +65,18 @@ const createCustomerID = (name: string, id: number): string => {
   return `Customer ${name} has id ${id}`;
 };
 
+// 04 Function Type
+let myID = createCustomerID('Ann', 10);
+IdGenerator = createCustomerID;
+getBookByID(3454);
+console.log(myID);
+
+myID = IdGenerator('Dima', 20);
+console.log(myID);
+
+console.group();
+
+// 5. Optional, Default and Rest Parameters
 const createCustomer = (name: string, age?: string, city?: string): void => {
   console.log(`Hello, my name is ${name}`);
 
@@ -65,6 +88,13 @@ const createCustomer = (name: string, age?: string, city?: string): void => {
     console.log(`I am from ${city} city`)
   }
 };
+
+createCustomer('Masha');
+createCustomer('Vasya', '20');
+createCustomer('Katya', '25', 'Kyiv');
+console.groupEnd();
+
+console.log(getBookTitlesByCategory());
 
 const сheckoutBooks = (customer: string, ...booksId: Array<number>): Array<string> => {
   const titles: Array<string> = [];
@@ -81,29 +111,32 @@ const сheckoutBooks = (customer: string, ...booksId: Array<number>): Array<stri
   return titles;
 }
 
-logFirstAvailable(getAllBooks());
-
-const booksByJsCategory = getBookTitlesByCategory(Category.JavaScript);
-logBookTitles(booksByJsCategory);
-
-booksByJsCategory.forEach((title) => console.log(title));
-
-let myID = createCustomerID('Ann', 10);
-IdGenerator = createCustomerID;
-getBookByID(3454);
-console.log(myID);
-
-myID = IdGenerator('Dima', 20);
-console.log(myID);
-
-console.group();
-createCustomer('Masha');
-createCustomer('Vasya', '20');
-createCustomer('Katya', '25', 'Kyiv');
-console.groupEnd();
-
-console.log(getBookTitlesByCategory());
-logFirstAvailable();
-
 const myBooks: Array<string> = сheckoutBooks('Ann', 2323, 3454);
 myBooks.forEach((title) => console.log(title));
+
+// 6. Function Overloading
+function getTitles(author: string): Array<string>;
+function getTitles(available: boolean): Array<string>;
+function getTitles(bookProp: any): Array<string> {
+  const books: Array<any> = getAllBooks();
+  const booksTitles: Array<string> = [];
+
+  if (typeof bookProp === 'string') {
+    for (let book of books) {
+      if (bookProp === book.author) {
+        booksTitles.push(book);
+      }
+    }
+  } else if (typeof bookProp === 'boolean') {
+    for (let book of books) {
+      if (bookProp === book.available) {
+        booksTitles.push(book);
+      }
+    }
+  }
+
+  return booksTitles;
+}
+
+const checkedOutBooks: Array<string> = getTitles(false);
+checkedOutBooks.forEach((title) => console.log(title));
