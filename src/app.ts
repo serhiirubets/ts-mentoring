@@ -6,6 +6,37 @@ enum Category {
   'Angular2'
 }
 
+// 08. Defining an Interface for Function Types
+interface DamageLogger {
+  (a: string): void;
+}
+
+interface Person {
+  name: string;
+  email: string;
+}
+
+// 09. Extending Interface
+interface Author extends Person {
+  numBooksPublished: number;
+}
+
+interface Librarian extends Person {
+  department: string;
+  assistCustomer: (custName) => void;
+}
+
+// 07. Defining an Interface for Function Types
+interface Book {
+  id: number;
+  title: string;
+  author: string;
+  available: boolean;
+  category: Category;
+  pages?: number;
+  markDamaged?: DamageLogger;
+}
+
 // Basic Types
 const booksData = [
   { id: 2323, title: 'Refactoring JavaScript', author: 'Evan Burchard', available: true, category: Category.JavaScript },
@@ -16,13 +47,13 @@ const booksData = [
 
 let IdGenerator: (name: string, id: number) => string;
 
-function getAllBooks(): Array<any> {
+function getAllBooks(): Array<Book> {
   return booksData;
 }
 
-function logFirstAvailable(books: Array<any> = booksData): void {
+function logFirstAvailable(books: Array<Book> = booksData): void {
   const booksLength = books.length;
-  const firstAvailableBook = books.find((book: any) => book.available);
+  const firstAvailableBook = books.find((book: Book) => book.available);
 
   console.log(`The first available book name is ${firstAvailableBook.title}`);
   console.log(`Total book length is ${booksLength}`);
@@ -57,7 +88,7 @@ logBookTitles(booksByJsCategory);
 // 03. Arrow Functions
 booksByJsCategory.forEach((title) => console.log(title));
 
-const getBookByID = (id: number): Object => {
+const getBookByID = (id: number): Book | undefined => {
   return getAllBooks().find((book) => book.id === id);
 };
 
@@ -140,3 +171,117 @@ function getTitles(bookProp: any): Array<string> {
 
 const checkedOutBooks: Array<string> = getTitles(false);
 checkedOutBooks.forEach((title) => console.log(title));
+
+
+function printBook(book: Book): void {
+  console.log(`${book.title} by ${book.author}`);
+}
+
+const myBook: Book = {
+  id: 5,
+  title: 'Colors, Backgrounds, and Gradients',
+  author: 'Eric A. Meyer',
+  available: true,
+  category: Category.CSS,
+  pages: 200,
+  markDamaged: (reason: string) => {
+    console.log(`Damaged: ${reason}`);
+  }
+};
+
+printBook(myBook);
+myBook.markDamaged('missing back cover');
+
+const logDamage: DamageLogger = (reason: string) => {
+  console.log(reason);
+};
+
+logDamage('test value');
+
+const favoriteAuthor: Author = {
+  name: 'Dima',
+  email: 'dima@test.com',
+  numBooksPublished: 5
+};
+
+/*
+const favoriteLibrarian: Librarian = {
+  name: 'Vanya',
+  email: 'vanya@test.com',
+  department: 'test',
+  assistCustomer: (name) => {
+    console.log(name);
+  }
+}
+*/
+
+// 10. Interfaces for Class Types
+class UniversityLibrarian implements Librarian {
+  name: string;
+  email: string;
+  department: string;
+
+  assistCustomer(name: string): void {
+    console.log(`${name} from department ${this.department}`)
+  }
+}
+
+const favoriteLibrarian: Librarian = new UniversityLibrarian();
+favoriteLibrarian.name = 'Max';
+favoriteLibrarian.department = 'BBC';
+favoriteLibrarian.assistCustomer('Viktor');
+
+// 11. Creating and Using Classes
+abstract class ReferenceItem {
+  // title: string;
+  // year: number;
+
+  static department = 'BBC';
+
+  private _publisher: string;
+
+  get publisher(): string {
+    return this._publisher.toUpperCase();
+  }
+
+  set publisher(newPublisher: string) {
+    this._publisher = newPublisher;
+  }
+
+  abstract printCitation(): void;
+
+  constructor(public title: string, protected year: number) {
+    // this.title = newTitle;
+    // this.year = newYear;
+    console.log('Creating a new ReferenceItem...');
+  }
+
+  printItem(): void {
+    console.log(`${this.title} was published in ${this.year} in ${ReferenceItem.department}`);
+  }
+}
+
+// const ref = new ReferenceItem('Them', 1990);
+// ref.printItem();
+// ref.publisher = 'Viktor';
+// console.log(ref.publisher);
+
+
+// 12. Extending Classes
+class Encyclopedia extends ReferenceItem {
+  constructor(title: string, year: number, public edition: number) {
+    super(title, year);
+  }
+
+  printItem() {
+    super.printItem();
+    console.log(`Edition: ${this.edition} in ${this.year}`);
+  }
+
+  printCitation(): void {
+    console.log(`${this.title} - ${this.year}`);
+  }
+}
+
+const refBook: Encyclopedia = new Encyclopedia('About word', 1995, 2);
+refBook.printItem();
