@@ -1,41 +1,7 @@
-enum Category {
-  'JavaScript',
-  'CSS',
-  'HTML',
-  'TypeScript',
-  'Angular2'
-}
-
-// 08. Defining an Interface for Function Types
-interface DamageLogger {
-  (a: string): void;
-}
-
-interface Person {
-  name: string;
-  email: string;
-}
-
-// 09. Extending Interface
-interface Author extends Person {
-  numBooksPublished: number;
-}
-
-interface Librarian extends Person {
-  department: string;
-  assistCustomer: (custName) => void;
-}
-
-// 07. Defining an Interface for Function Types
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  available: boolean;
-  category: Category;
-  pages?: number;
-  markDamaged?: DamageLogger;
-}
+import Category from './enums';
+import { Book, Logger, Author, Librarian } from './interfaces';
+import { UniversityLibrarian } from './classes';
+import RefBook from './encyclopedia';
 
 // Basic Types
 const booksData = [
@@ -192,7 +158,7 @@ const myBook: Book = {
 printBook(myBook);
 myBook.markDamaged('missing back cover');
 
-const logDamage: DamageLogger = (reason: string) => {
+const logDamage: Logger = (reason: string) => {
   console.log(reason);
 };
 
@@ -215,73 +181,10 @@ const favoriteLibrarian: Librarian = {
 }
 */
 
-// 10. Interfaces for Class Types
-class UniversityLibrarian implements Librarian {
-  name: string;
-  email: string;
-  department: string;
-
-  assistCustomer(name: string): void {
-    console.log(`${name} from department ${this.department}`)
-  }
-}
-
 const favoriteLibrarian: Librarian = new UniversityLibrarian();
 favoriteLibrarian.name = 'Max';
 favoriteLibrarian.department = 'BBC';
 favoriteLibrarian.assistCustomer('Viktor');
 
-// 11. Creating and Using Classes
-abstract class ReferenceItem {
-  // title: string;
-  // year: number;
-
-  static department = 'BBC';
-
-  private _publisher: string;
-
-  get publisher(): string {
-    return this._publisher.toUpperCase();
-  }
-
-  set publisher(newPublisher: string) {
-    this._publisher = newPublisher;
-  }
-
-  abstract printCitation(): void;
-
-  constructor(public title: string, protected year: number) {
-    // this.title = newTitle;
-    // this.year = newYear;
-    console.log('Creating a new ReferenceItem...');
-  }
-
-  printItem(): void {
-    console.log(`${this.title} was published in ${this.year} in ${ReferenceItem.department}`);
-  }
-}
-
-// const ref = new ReferenceItem('Them', 1990);
-// ref.printItem();
-// ref.publisher = 'Viktor';
-// console.log(ref.publisher);
-
-
-// 12. Extending Classes
-class Encyclopedia extends ReferenceItem {
-  constructor(title: string, year: number, public edition: number) {
-    super(title, year);
-  }
-
-  printItem() {
-    super.printItem();
-    console.log(`Edition: ${this.edition} in ${this.year}`);
-  }
-
-  printCitation(): void {
-    console.log(`${this.title} - ${this.year}`);
-  }
-}
-
-const refBook: Encyclopedia = new Encyclopedia('About word', 1995, 2);
+const refBook: RefBook = new RefBook('About word', 1995, 2);
 refBook.printItem();
