@@ -211,7 +211,7 @@ const favoriteLibrarian: Librarian = {
 }
 */
 
-const favoriteLibrarian: Librarian = new UniversityLibrarian();
+const favoriteLibrarian = new UniversityLibrarian();
 favoriteLibrarian.name = 'Max';
 favoriteLibrarian.department = 'BBC';
 favoriteLibrarian.assistCustomer('Viktor');
@@ -283,3 +283,7 @@ console.log(firstMagazine);
 magazineShelf.printTitles();
 const magazineCodeComplete = magazineShelf.find('Five Points');
 console.log(magazineCodeComplete);
+
+// Task 21 Method Decorator
+favoriteLibrarian.assistFaculty = () => console.log('assistFaculty');
+favoriteLibrarian.teachCommunity = () => console.log('teachCommunity');
