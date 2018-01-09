@@ -173,3 +173,21 @@ export function getTitles(bookProp: any): Array<string> {
 export function printBook(book: Book): void {
   console.log(`${book.title} by ${book.author}`);
 }
+
+export function getBooksByCategoryPromise(
+  category: Category
+): Promise<Array<string>> {
+  const promise: Promise<Array<string>> = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const foundBooks: Array<string> = getBookTitlesByCategory(category);
+
+      if (foundBooks.length > 0) {
+        resolve(foundBooks);
+      } else {
+        reject('No found');
+      }
+    }, 2000);
+  });
+
+  return promise;
+}

@@ -16,7 +16,8 @@ import {
   getTitles,
   printBook,
   getBooksByCategory,
-  logCategorySearch
+  logCategorySearch,
+  getBooksByCategoryPromise
 } from './lib/utility-functions';
 
 let IdGenerator: (name: string, id: number) => string;
@@ -172,3 +173,15 @@ favoriteLibrarian.assistFaculty = () => console.log('assistFaculty');
 console.log('begin');
 getBooksByCategory(Category.JavaScript, logCategorySearch);
 console.log('end');
+
+// Task 23. Promise
+console.log('begin promise');
+getBooksByCategoryPromise(Category.CSS)
+  .then(titles => {
+    console.log(titles);
+    return titles.length;
+  })
+  .then(countOfBooks => console.log(countOfBooks))
+  .catch(err => {
+    console.log(err);
+  });
