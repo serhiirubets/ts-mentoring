@@ -4,91 +4,28 @@ import { UniversityLibrarian } from './classes';
 import RefBook from './encyclopedia';
 import { purge } from './lib/utility-functions';
 import Shelf from './shelf';
-
-// Basic Types
-const booksData = [
-  {
-    id: 2323,
-    title: 'Refactoring JavaScript',
-    author: 'Evan Burchard',
-    available: true,
-    category: Category.JavaScript
-  },
-  {
-    id: 3454,
-    title: 'JavaScript Testing',
-    author: 'Liang Yuxian Eugene',
-    available: false,
-    category: Category.Angular2
-  },
-  {
-    id: 3456,
-    title: 'CSS Secrets',
-    author: 'Lea Verou',
-    available: true,
-    category: Category.CSS
-  },
-  {
-    id: 6443,
-    title: 'Mastering JavaScript Object-Oriented Programming',
-    author: 'Andrea Chiarelli',
-    available: true,
-    category: Category.HTML
-  }
-];
+import {
+  logFirstAvailable,
+  getAllBooks,
+  getBookTitlesByCategory,
+  logBookTitles,
+  createCustomerID,
+  getBookByID,
+  createCustomer,
+  сheckoutBooks,
+  getTitles,
+  printBook,
+  getBooksByCategory,
+  logCategorySearch
+} from './lib/utility-functions';
 
 let IdGenerator: (name: string, id: number) => string;
-
-function getAllBooks(): Array<Book> {
-  return booksData;
-}
-
-function logFirstAvailable(books: Array<Book> = booksData): void {
-  const booksLength = books.length;
-  const firstAvailableBook = books.find((book: Book) => book.available);
-
-  console.log(`The first available book name is ${firstAvailableBook.title}`);
-  console.log(`Total book length is ${booksLength}`);
-}
 
 logFirstAvailable(getAllBooks());
 logFirstAvailable();
 
-// 02 Enum
-function getBookTitlesByCategory(
-  category: Category = Category.JavaScript
-): Array<string> {
-  const titles: Array<string> = [];
-  const books = getAllBooks();
-
-  for (let book of books) {
-    if (book.category === category) {
-      titles.push(book.title);
-    }
-  }
-
-  return titles;
-}
-
-function logBookTitles(titles: Array<string>): void {
-  for (let title of titles) {
-    console.log(title);
-  }
-}
-
 const booksByJsCategory = getBookTitlesByCategory(Category.JavaScript);
 logBookTitles(booksByJsCategory);
-
-// 03. Arrow Functions
-booksByJsCategory.forEach(title => console.log(title));
-
-const getBookByID = (id: number): Book | undefined => {
-  return getAllBooks().find(book => book.id === id);
-};
-
-const createCustomerID = (name: string, id: number): string => {
-  return `Customer ${name} has id ${id}`;
-};
 
 // 04 Function Type
 let myID = createCustomerID('Ann', 10);
@@ -101,19 +38,6 @@ console.log(myID);
 
 console.group();
 
-// 5. Optional, Default and Rest Parameters
-const createCustomer = (name: string, age?: string, city?: string): void => {
-  console.log(`Hello, my name is ${name}`);
-
-  if (age) {
-    console.log(`My age is ${age}`);
-  }
-
-  if (city) {
-    console.log(`I am from ${city} city`);
-  }
-};
-
 createCustomer('Masha');
 createCustomer('Vasya', '20');
 createCustomer('Katya', '25', 'Kyiv');
@@ -121,57 +45,13 @@ console.groupEnd();
 
 console.log(getBookTitlesByCategory());
 
-const сheckoutBooks = (
-  customer: string,
-  ...booksId: Array<number>
-): Array<string> => {
-  const titles: Array<string> = [];
-  console.log(`Customer name is ${customer}`);
-
-  for (let bookId of booksId) {
-    const book: any = getBookByID(bookId);
-
-    if (book && book.available) {
-      titles.push(book.title);
-    }
-  }
-
-  return titles;
-};
-
 const myBooks: Array<string> = сheckoutBooks('Ann', 2323, 3454);
 myBooks.forEach(title => console.log(title));
-
-// 6. Function Overloading
-function getTitles(author: string): Array<string>;
-function getTitles(available: boolean): Array<string>;
-function getTitles(bookProp: any): Array<string> {
-  const books: Array<any> = getAllBooks();
-  const booksTitles: Array<string> = [];
-
-  if (typeof bookProp === 'string') {
-    for (let book of books) {
-      if (bookProp === book.author) {
-        booksTitles.push(book);
-      }
-    }
-  } else if (typeof bookProp === 'boolean') {
-    for (let book of books) {
-      if (bookProp === book.available) {
-        booksTitles.push(book);
-      }
-    }
-  }
-
-  return booksTitles;
-}
 
 const checkedOutBooks: Array<string> = getTitles(false);
 checkedOutBooks.forEach(title => console.log(title));
 
-function printBook(book: Book): void {
-  console.log(`${book.title} by ${book.author}`);
-}
+booksByJsCategory.forEach(title => console.log(title));
 
 const myBook: Book = {
   id: 5,
@@ -286,4 +166,9 @@ console.log(magazineCodeComplete);
 
 // Task 21 Method Decorator
 favoriteLibrarian.assistFaculty = () => console.log('assistFaculty');
-favoriteLibrarian.teachCommunity = () => console.log('teachCommunity');
+// favoriteLibrarian.teachCommunity = () => console.log('teachCommunity');
+
+// Task 22. Callback Functions
+console.log('begin');
+getBooksByCategory(Category.JavaScript, logCategorySearch);
+console.log('end');
