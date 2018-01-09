@@ -1,3 +1,4 @@
+import 'babel-polyfill';
 import Category from './enums';
 import { Book, Logger, Author, Librarian, Magazine } from './interfaces';
 import { UniversityLibrarian } from './classes';
@@ -17,7 +18,8 @@ import {
   printBook,
   getBooksByCategory,
   logCategorySearch,
-  getBooksByCategoryPromise
+  getBooksByCategoryPromise,
+  logSearchResults
 } from './lib/utility-functions';
 
 let IdGenerator: (name: string, id: number) => string;
@@ -185,3 +187,8 @@ getBooksByCategoryPromise(Category.CSS)
   .catch(err => {
     console.log(err);
   });
+
+// 24. Async/await
+console.log('Beginning search...');
+logSearchResults(Category.JavaScript).catch(reason => console.log(reason));
+console.log('Search submitted...');
