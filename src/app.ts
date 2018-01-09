@@ -1,14 +1,40 @@
 import Category from './enums';
-import { Book, Logger, Author, Librarian } from './interfaces';
+import { Book, Logger, Author, Librarian, Magazine } from './interfaces';
 import { UniversityLibrarian } from './classes';
 import RefBook from './encyclopedia';
+import { purge } from './lib/utility-functions';
+import Shelf from './shelf';
 
 // Basic Types
 const booksData = [
-  { id: 2323, title: 'Refactoring JavaScript', author: 'Evan Burchard', available: true, category: Category.JavaScript },
-  { id: 3454, title: 'JavaScript Testing', author: 'Liang Yuxian Eugene', available: false, category: Category.Angular2 },
-  { id: 3456, title: 'CSS Secrets', author: 'Lea Verou', available: true, category: Category.CSS },
-  { id: 6443, title: 'Mastering JavaScript Object-Oriented Programming', author: 'Andrea Chiarelli', available: true, category: Category.HTML }
+  {
+    id: 2323,
+    title: 'Refactoring JavaScript',
+    author: 'Evan Burchard',
+    available: true,
+    category: Category.JavaScript
+  },
+  {
+    id: 3454,
+    title: 'JavaScript Testing',
+    author: 'Liang Yuxian Eugene',
+    available: false,
+    category: Category.Angular2
+  },
+  {
+    id: 3456,
+    title: 'CSS Secrets',
+    author: 'Lea Verou',
+    available: true,
+    category: Category.CSS
+  },
+  {
+    id: 6443,
+    title: 'Mastering JavaScript Object-Oriented Programming',
+    author: 'Andrea Chiarelli',
+    available: true,
+    category: Category.HTML
+  }
 ];
 
 let IdGenerator: (name: string, id: number) => string;
@@ -29,7 +55,9 @@ logFirstAvailable(getAllBooks());
 logFirstAvailable();
 
 // 02 Enum
-function getBookTitlesByCategory(category: Category = Category.JavaScript): Array<string> {
+function getBookTitlesByCategory(
+  category: Category = Category.JavaScript
+): Array<string> {
   const titles: Array<string> = [];
   const books = getAllBooks();
 
@@ -52,10 +80,10 @@ const booksByJsCategory = getBookTitlesByCategory(Category.JavaScript);
 logBookTitles(booksByJsCategory);
 
 // 03. Arrow Functions
-booksByJsCategory.forEach((title) => console.log(title));
+booksByJsCategory.forEach(title => console.log(title));
 
 const getBookByID = (id: number): Book | undefined => {
-  return getAllBooks().find((book) => book.id === id);
+  return getAllBooks().find(book => book.id === id);
 };
 
 const createCustomerID = (name: string, id: number): string => {
@@ -82,7 +110,7 @@ const createCustomer = (name: string, age?: string, city?: string): void => {
   }
 
   if (city) {
-    console.log(`I am from ${city} city`)
+    console.log(`I am from ${city} city`);
   }
 };
 
@@ -93,7 +121,10 @@ console.groupEnd();
 
 console.log(getBookTitlesByCategory());
 
-const сheckoutBooks = (customer: string, ...booksId: Array<number>): Array<string> => {
+const сheckoutBooks = (
+  customer: string,
+  ...booksId: Array<number>
+): Array<string> => {
   const titles: Array<string> = [];
   console.log(`Customer name is ${customer}`);
 
@@ -106,10 +137,10 @@ const сheckoutBooks = (customer: string, ...booksId: Array<number>): Array<stri
   }
 
   return titles;
-}
+};
 
 const myBooks: Array<string> = сheckoutBooks('Ann', 2323, 3454);
-myBooks.forEach((title) => console.log(title));
+myBooks.forEach(title => console.log(title));
 
 // 6. Function Overloading
 function getTitles(author: string): Array<string>;
@@ -136,8 +167,7 @@ function getTitles(bookProp: any): Array<string> {
 }
 
 const checkedOutBooks: Array<string> = getTitles(false);
-checkedOutBooks.forEach((title) => console.log(title));
-
+checkedOutBooks.forEach(title => console.log(title));
 
 function printBook(book: Book): void {
   console.log(`${book.title} by ${book.author}`);
@@ -188,3 +218,68 @@ favoriteLibrarian.assistCustomer('Viktor');
 
 const refBook: RefBook = new RefBook('About word', 1995, 2);
 refBook.printItem();
+
+// Task 17. Generic Functions
+
+const inventory: Array<Book> = [
+  {
+    id: 10,
+    title: 'The C Programming Language',
+    author: 'K & R',
+    available: true,
+    category: Category.Software
+  },
+  {
+    id: 11,
+    title: 'Code Complete',
+    author: 'Steve McConnell',
+    available: true,
+    category: Category.Software
+  },
+  {
+    id: 12,
+    title: '8-Bit Graphics with Cobol',
+    author: 'A. B.',
+    available: true,
+    category: Category.Software
+  },
+  {
+    id: 13,
+    title: 'Cool autoexec.bat Scripts!',
+    author: 'C. D.',
+    available: true,
+    category: Category.Software
+  }
+];
+
+/*
+const purgedBooks: Array<Book> = purge<Book>(inventory);
+console.log(purgedBooks);
+
+const purgedNumbers: Array<number> = purge<number>([34, 23, 54, 23, 54, 64]);
+console.log(purgedNumbers);
+*/
+
+// Task 18. Generic Interfaces and Classes
+const bookShelf: Shelf<Book> = new Shelf<Book>();
+inventory.forEach(book => bookShelf.add(book));
+
+const firstBook: Book = bookShelf.getFist();
+console.log(firstBook);
+
+const magazines: Array<Magazine> = [
+  { title: 'Programming Language Monthly', publisher: 'Code Mags' },
+  { title: 'Literary Fiction Quarterly', publisher: 'College Press' },
+  { title: 'Five Points', publisher: 'GSU' }
+];
+
+const magazineShelf: Shelf<Magazine> = new Shelf<Magazine>();
+magazines.forEach(magazine => magazineShelf.add(magazine));
+
+const firstMagazine: Magazine = magazineShelf.getFist();
+console.log(firstMagazine);
+
+// Task 19. Generic Constraints
+magazineShelf.printTitles();
+const magazineCodeComplete = magazineShelf.find('Five Points');
+console.log(magazineCodeComplete);
